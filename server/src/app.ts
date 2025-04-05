@@ -25,10 +25,10 @@ const io = new Server(server)
 // 8 Socket io connecction mtlb jb bhi ui se request ayi toh ine handle krta
 // socket variable is where all user info is stored, basically a user is called
 // a socket param here
-io.on("connection", (socket: Socket) => { // ✅ Type added: socket: Socket
+io.on("connection", (socket: Socket) => { //socket type is Socket
     // socket.on jb bhi client se msg emit hoke aata idhr toh wo
     // message 
-    socket.on("usermessage", (message: string) => { // ✅ Type added: message is string
+    socket.on("usermessage", (message: string) => { // message is string
         console.log("New User Message: ", message);
         // send the message from user to all other users
         io.emit("message", message)
@@ -36,13 +36,17 @@ io.on("connection", (socket: Socket) => { // ✅ Type added: socket: Socket
 })
 
 // 4 give file path where your html file is
-app.use(express.static(path.resolve("./src/public")))
+// app.use(express.static(path.resolve("./src/public")))
+app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (req: Request, res: Response) => { // ✅ Request, Response types added
+
+app.get("/", (req: Request, res: Response) => { 
   try {
     // giving path of our route to html file
     // ✅ Sahi: Absolute path dena hota hai
-    return res.sendFile(path.resolve("./public/index.html"))
+    // return res.sendFile(path.resolve("./public/index.html"))
+    return res.sendFile(path.join(__dirname, "public", "index.html"));
+
   } catch (error: any) { // ✅ error type: any (for now)
     console.log(error);
     res.status(500).json({ msg: error.message }) // ✅ error.message typed
