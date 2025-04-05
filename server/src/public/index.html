@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+</head>
+<body>
+     
+    <h1>Chat APP</h1>
+
+    <!-- 👇 Ye message type karne ka input hai -->
+    <input type="text" placeholder="Enter a Message" id="message">
+    <button id="sendBtn">Send</button>
+
+    <!-- 👇 Sab messages yaha dikhaye jayenge -->
+    <div id="messages"></div>
+
+    <!-- 👇 Socket.io ka script jo server ke saath connection banata -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      // 😎 Connection bana liya bhai socket se
+      const socket = io()
+
+      //  Prompt se user ka naam lere
+      const username = prompt("Enter Your Name:");
+
+      //  DOM se input, btn, div lere
+      const sendBtn = document.getElementById("sendBtn")
+      const messageInput = document.getElementById("message")
+      const allMessages = document.getElementById("messages")
+
+      // 👂 Server se message aaya toh usko UI pe dikhate
+      socket.on('message', data => {
+          const p = document.createElement("p")
+          // 📝 Message ke upar username bhi dikhare
+          p.innerHTML = `<strong>${data.username}</strong>: ${data.message}`
+          allMessages.appendChild(p)
+      });
+
+      // 📤 Jab user "Send" pe click karinga toh ye message bhejna
+      sendBtn.addEventListener("click", () => {
+          const message = messageInput.value;
+          console.log(message);
+          //  Emit/send karre "usermessage" event with username
+          socket.emit('usermessage', {
+              username,
+              message
+          })
+
+          // 🧹 Input clear krdere send btn pe click kre baad
+          messageInput.value = ""
+      })
+    </script>
+</body>
+</html>
